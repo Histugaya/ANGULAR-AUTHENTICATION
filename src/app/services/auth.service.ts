@@ -11,11 +11,12 @@ export class AuthService {
     private baseUrl: Url) {
   }
 
+  active =false;
   user = {
     name: 'sunil',
     admin: true
   }
-  secretKey = "6LcbkM8aAAAAADlt4iXjQ1qEDoecghic0T4JZYg7";
+  // secretKey = "6LcbkM8aAAAAADlt4iXjQ1qEDoecghic0T4JZYg7";
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -23,19 +24,20 @@ export class AuthService {
     })
   };
 
-  checkCaptcha(captchaResponse) {
-    let obj = {
-      secret: this.secretKey,
-      response: captchaResponse
-    }
-    return this.http.post(this.baseUrl.verifyUrl, obj, this.httpOptions)
-  }
+  // checkCaptcha(captchaResponse) {
+  //   let obj = {
+  //     secret: this.secretKey,
+  //     response: captchaResponse
+  //   }
+  //   return this.http.post(this.baseUrl.verifyUrl, obj, this.httpOptions)
+  // }
 
   login(credentials) {
     return this.http.post(this.baseUrl.rootUrl + "token/login", JSON.stringify(credentials), this.httpOptions)
       .map(response => {
         let result = response;
         if (result) {
+          this.active = true;
           localStorage.setItem('token', result.toString());
           return true;
         }
@@ -50,7 +52,7 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return false //tokenNotExpired();
+    return this.active; //tokenNotExpired();
   }
 
   get currentUser() {
